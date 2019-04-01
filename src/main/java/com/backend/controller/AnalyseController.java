@@ -2,6 +2,7 @@ package com.backend.controller;
 
 import java.util.ArrayList;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.message.response.ResponseMessage;
 import com.backend.model.Analyse;
 import com.backend.repository.AnalyseRepository;
 
@@ -38,10 +40,11 @@ public class AnalyseController {
   }
  
   @PostMapping(value = "/analyses/create")
-  public Analyse postAnalyse(@RequestBody Analyse analyse) {
+  public ResponseEntity<?> postAnalyse(@RequestBody Analyse analyse) {
  
-	  Analyse _analyse = repository.save(new Analyse(analyse.getAnalyseDemande(),analyse.getResultat(),analyse.getValNormal(),analyse.getRemarque(),analyse.getDoctorName(),analyse.getEmailDoctor()));
-    return _analyse;
+	  repository.save(new Analyse(analyse.getAnalyseDemande(),analyse.getResultat(),analyse.getValNormal(),analyse.getRemarque(),analyse.getDoctorName(),analyse.getEmailDoctor(),analyse.getIdPatient()));
+	  
+	  return new ResponseEntity<>(new ResponseMessage("Analyse has been Added!"), HttpStatus.OK);
   }
  
   @DeleteMapping("/analyses/{id}")
@@ -55,22 +58,27 @@ public class AnalyseController {
  
  
   @PutMapping("/analyse/{id}")
-  public ResponseEntity<Analyse> updateAnalyse(@PathVariable("id") long id, @RequestBody Analyse analyse) {
+  public ResponseEntity<?> updateAnalyse(@PathVariable("id") long id, @RequestBody Analyse analyse) {
     System.out.println("Update Analyse with ID = " + id + "...");
+    try {
+      Optional<Analyse> analyseData = repository.findById(id);
  
-    Optional<Analyse> analyseData = repository.findById(id);
- 
-    if (analyseData.isPresent()) {
-    	Analyse _analyse = analyseData.get();
-      _analyse.setAnalyseDemande((analyse.getAnalyseDemande()));
-      _analyse.setResultat(analyse.getResultat());
-      _analyse.setValNormal(analyse.getValNormal());
-      _analyse.setRemarque(analyse.getRemarque());
-      _analyse.setDoctorName(analyse.getDoctorName());
-      _analyse.setEmailDoctor(analyse.getEmailDoctor());
-      return new ResponseEntity<>(repository.save(_analyse), HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (analyseData.isPresent()) {
+    	    Analyse _analyse = analyseData.get();
+    	    Analyse an = new Analyse();
+    	      an.setId(id);
+              an.setAnalyseDemande((analyse.getAnalyseDemande() != null ? analyse.getAnalyseDemande(): _analyse.getAnalyseDemande()));
+              an.setResultat( (analyse.getResultat() != null ? analyse.getResultat(): _analyse.getResultat() ) );
+              an.setValNormal( (analyse.getValNormal() != null ? analyse.getValNormal(): _analyse.getValNormal() ) );
+              an.setRemarque( (analyse.getRemarque() != null ? analyse.getRemarque(): _analyse.getRemarque() ) );
+              an.setDoctorName( (analyse.getDoctorName() != null ? analyse.getDoctorName(): _analyse.getDoctorName() ) );
+              an.setEmailDoctor( (analyse.getEmailDoctor() != null ? analyse.getEmailDoctor(): _analyse.getEmailDoctor() ) );
+             repository.save(an);
+         } 
+        return new ResponseEntity<>(new ResponseMessage("Analyse has been Modified!"), HttpStatus.OK);
+    } catch (Exception e) {
+    	return new ResponseEntity<>(new ResponseMessage(e.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+ 
   }
 }

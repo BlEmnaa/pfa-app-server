@@ -1,13 +1,7 @@
 package com.backend.model;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -44,15 +38,16 @@ public class Analyse{
     @Email
     private String emailDoctor;
     
-   
-
+    @JoinTable(name="user", 
+    		joinColumns = @JoinColumn(name="id"), 
+    		foreignKey = @ForeignKey(name = "fk_idPatient_idUser"))
+    private Long idPatient ;
 
 	public Analyse() {}
-	
 
 	public Analyse(@NotBlank String analyseDemande, @NotBlank String resultat, @NotBlank String valNormal,
 			@NotBlank String remarque, @NotBlank @Size(max = 50) String doctorName,
-			@NotBlank @Size(max = 50) @Email String emailDoctor) {
+			@NotBlank @Size(max = 50) @Email String emailDoctor, Long idPatient) {
 		super();
 		this.analyseDemande = analyseDemande;
 		this.resultat = resultat;
@@ -60,7 +55,7 @@ public class Analyse{
 		this.remarque = remarque;
 		this.doctorName = doctorName;
 		this.emailDoctor = emailDoctor;
-		
+		this.idPatient = idPatient;
 	}
 
 
@@ -119,6 +114,17 @@ public class Analyse{
 	public void setEmailDoctor(String emailDoctor) {
 		this.emailDoctor = emailDoctor;
 	}
+
+	public Long getIdPatient() {
+		return idPatient;
+	}
+
+	public void setIdPatient(Long idPatient) {
+		this.idPatient = idPatient;
+	}
+	
+
+	
 
     
 
