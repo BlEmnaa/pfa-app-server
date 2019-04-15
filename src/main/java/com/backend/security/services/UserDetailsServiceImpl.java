@@ -1,6 +1,7 @@
 package com.backend.security.services;
 
 import com.backend.model.User;
+
 import com.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

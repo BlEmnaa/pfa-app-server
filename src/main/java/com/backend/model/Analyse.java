@@ -1,63 +1,43 @@
 package com.backend.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
 
 @Entity
-@Table(name = "analyses")
-public class Analyse{
+@Table(name="analyses")
+public class Analyse extends HashMap<String, String>{
 	
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
     private String analyseDemande;
 
-
-    @NotBlank
     private String resultat;
     
     @NotBlank
     private String valNormal;
-    
-    @NotBlank
-    private String remarque;
-    
-    @NotBlank
-    @Size(max = 50)
-    private String doctorName;
-    
-    @NotBlank
-    @Size(max = 50)
-    @Email
-    private String emailDoctor;
-    
-    @JoinTable(name="user", 
-    		joinColumns = @JoinColumn(name="id"), 
-    		foreignKey = @ForeignKey(name = "fk_idPatient_idUser"))
-    private Long idPatient ;
 
-	public Analyse() {}
 
-	public Analyse(@NotBlank String analyseDemande, @NotBlank String resultat, @NotBlank String valNormal,
-			@NotBlank String remarque, @NotBlank @Size(max = 50) String doctorName,
-			@NotBlank @Size(max = 50) @Email String emailDoctor, Long idPatient) {
+    public Analyse() {}
+	
+	public Analyse( @NotBlank String analyseDemande, String resultat, @NotBlank String valNormal) {
 		super();
 		this.analyseDemande = analyseDemande;
 		this.resultat = resultat;
 		this.valNormal = valNormal;
-		this.remarque = remarque;
-		this.doctorName = doctorName;
-		this.emailDoctor = emailDoctor;
-		this.idPatient = idPatient;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -90,42 +70,5 @@ public class Analyse{
 	public void setValNormal(String valNormal) {
 		this.valNormal = valNormal;
 	}
-
-	public String getRemarque() {
-		return remarque;
-	}
-
-	public void setRemarque(String remarque) {
-		this.remarque = remarque;
-	}
-
-	public String getDoctorName() {
-		return doctorName;
-	}
-
-	public void setDoctorName(String doctorName) {
-		this.doctorName = doctorName;
-	}
-
-	public String getEmailDoctor() {
-		return emailDoctor;
-	}
-
-	public void setEmailDoctor(String emailDoctor) {
-		this.emailDoctor = emailDoctor;
-	}
-
-	public Long getIdPatient() {
-		return idPatient;
-	}
-
-	public void setIdPatient(Long idPatient) {
-		this.idPatient = idPatient;
-	}
 	
-
-	
-
-    
-
 } 

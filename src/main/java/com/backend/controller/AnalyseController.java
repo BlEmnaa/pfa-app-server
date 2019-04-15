@@ -42,7 +42,7 @@ public class AnalyseController {
   @PostMapping(value = "/analyses/create")
   public ResponseEntity<?> postAnalyse(@RequestBody Analyse analyse) {
  
-	  repository.save(new Analyse(analyse.getAnalyseDemande(),analyse.getResultat(),analyse.getValNormal(),analyse.getRemarque(),analyse.getDoctorName(),analyse.getEmailDoctor(),analyse.getIdPatient()));
+	  repository.save(new Analyse(analyse.getAnalyseDemande(),analyse.getResultat(),analyse.getValNormal()));
 	  
 	  return new ResponseEntity<>(new ResponseMessage("Analyse has been Added!"), HttpStatus.OK);
   }
@@ -70,9 +70,6 @@ public class AnalyseController {
               an.setAnalyseDemande((analyse.getAnalyseDemande() != null ? analyse.getAnalyseDemande(): _analyse.getAnalyseDemande()));
               an.setResultat( (analyse.getResultat() != null ? analyse.getResultat(): _analyse.getResultat() ) );
               an.setValNormal( (analyse.getValNormal() != null ? analyse.getValNormal(): _analyse.getValNormal() ) );
-              an.setRemarque( (analyse.getRemarque() != null ? analyse.getRemarque(): _analyse.getRemarque() ) );
-              an.setDoctorName( (analyse.getDoctorName() != null ? analyse.getDoctorName(): _analyse.getDoctorName() ) );
-              an.setEmailDoctor( (analyse.getEmailDoctor() != null ? analyse.getEmailDoctor(): _analyse.getEmailDoctor() ) );
              repository.save(an);
          } 
         return new ResponseEntity<>(new ResponseMessage("Analyse has been Modified!"), HttpStatus.OK);

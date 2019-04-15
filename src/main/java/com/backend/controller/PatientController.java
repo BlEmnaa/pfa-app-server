@@ -56,9 +56,6 @@ public class PatientController {
 
 	@Autowired
 	PasswordEncoder encoder;
-
-	@Autowired
-	JwtProvider jwtProvider;
  
   @GetMapping("/patients")
   public List<User> getAllPatients() {
