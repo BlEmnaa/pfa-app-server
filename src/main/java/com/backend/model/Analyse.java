@@ -1,6 +1,7 @@
 package com.backend.model;
 
 import java.util.HashMap;
+
 import java.util.Map;
 
 import javax.persistence.*;

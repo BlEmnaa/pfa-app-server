@@ -2,6 +2,7 @@ package com.backend.model;
 
 import java.sql.Blob;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 

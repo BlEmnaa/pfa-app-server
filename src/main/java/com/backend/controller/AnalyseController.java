@@ -3,12 +3,15 @@ package com.backend.controller;
 import java.util.ArrayList;
 
 
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,8 @@ import com.backend.message.response.ResponseMessage;
 import com.backend.model.Analyse;
 import com.backend.repository.AnalyseRepository;
 
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class AnalyseController {
@@ -30,6 +35,7 @@ public class AnalyseController {
   AnalyseRepository repository;
  
   @GetMapping("/analyses")
+  @Secured({"ROLE_PL","ROLE_ADMIN"})
   public List<Analyse> getAllAnalyses() {
     System.out.println("Get all Analyses...");
  
@@ -40,6 +46,7 @@ public class AnalyseController {
   }
  
   @PostMapping(value = "/analyses/create")
+  @Secured({"ROLE_ADMIN"})
   public ResponseEntity<?> postAnalyse(@RequestBody Analyse analyse) {
  
 	  repository.save(new Analyse(analyse.getAnalyseDemande(),analyse.getResultat(),analyse.getValNormal()));
@@ -48,6 +55,7 @@ public class AnalyseController {
   }
  
   @DeleteMapping("/analyses/{id}")
+  @Secured({"ROLE_ADMIN"})
   public ResponseEntity<String> deleteAnalyse(@PathVariable("id") long id) {
     System.out.println("Delete Analyse with ID = " + id + "...");
  
@@ -58,6 +66,7 @@ public class AnalyseController {
  
  
   @PutMapping("/analyse/{id}")
+  @Secured({"ROLE_ADMIN"})
   public ResponseEntity<?> updateAnalyse(@PathVariable("id") long id, @RequestBody Analyse analyse) {
     System.out.println("Update Analyse with ID = " + id + "...");
     try {

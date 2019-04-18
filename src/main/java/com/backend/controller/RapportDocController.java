@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.mail.*;
+import javax.mail.internet.*;
 import javax.validation.Valid;
 
 import org.json.JSONArray;
@@ -62,7 +65,7 @@ public class RapportDocController {
 	RapportDocRepository rapDocRepo;
 	
 	@GetMapping("/getAllRapports")
-	@Secured({"ROLE_PL"})
+	@Secured({"ROLE_PL","ROLE_ADMIN"})
 	public List<RapportDoc> getAllRapports() {
 		System.out.println("Get all RapportDocs...");
 	    List<RapportDoc> rapportDocs = new ArrayList<>();
@@ -89,7 +92,7 @@ public class RapportDocController {
 	}
 	
 	@PostMapping("/getByFullname")
-	@Secured({"ROLE_PL"})
+	@Secured({"ROLE_PL","ROLE_ADMIN"})
 	public List<RapportDoc> getByFullname(@Valid @RequestBody String fullnamePatient) {
 		System.out.println("Get all RapportDocs...");
 	    List<RapportDoc> rapportDocs = new ArrayList<>();
@@ -98,7 +101,7 @@ public class RapportDocController {
 	}
 	
 	@DeleteMapping("/{id}")
-	@Secured({"ROLE_PL"})
+	@Secured({"ROLE_ADMIN"})
 	public ResponseEntity<?> deleteRapport(@PathVariable("id") long idRapport) {
 	    System.out.println("Delete Rapport with ID = " + idRapport + "...");
 	    rapDocRepo.deleteById(idRapport);
@@ -106,7 +109,7 @@ public class RapportDocController {
 	}
 	
 	@PostMapping("/generateDoc")
-	@Secured({"ROLE_PL"})
+	@Secured({"ROLE_PL","ROLE_ADMIN"})
 	public ResponseEntity<?> generateDoc(@RequestBody Rapport rapport) throws IOException {
 		Document document = new Document();
 		String fileName = "Rapport_" + rapport.getNamePatient().toString() + "_" + rapport.getIdRapport().toString();
@@ -172,8 +175,49 @@ public class RapportDocController {
 	        	tableAnalyse.addCell(cel3);
 	        });
 	        document.add(tableAnalyse);
+			document.close();
 	        writer.close();
-			document.close();			
+	        
+	        String fileN = StringUtils.cleanPath(fileName+".pdf");
+			File file = new File(fileN);
+			String path = file.getAbsolutePath();
+			
+			Properties prop = new Properties();
+			prop.put("mail.smtp.auth", true);
+			prop.put("mail.smtp.starttls.enable", "true");
+			prop.put("mail.smtp.host", "smtp.gmail.com");
+			prop.put("mail.smtp.port", "25");
+			String mail = "abdoujojo95@gmail.com";
+			String pass = "hgfdsqpoiuytreza";
+			
+			Session session = Session.getInstance(prop, new Authenticator() {
+			    @Override
+			    protected PasswordAuthentication getPasswordAuthentication() {
+			        return new PasswordAuthentication(mail, pass);
+			    }
+			});
+			
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(mail));
+			message.setRecipients(
+			  Message.RecipientType.TO, InternetAddress.parse(rapport.getMailDocteur().toString()));
+			message.setSubject("Les Analyses concernant le patient "+rapport.getNamePatient().toString());
+			String msg = "Bonjour,\n"
+						+"Vous trouveriez ci-joint le rapport d\'analayse du patient "+rapport.getNamePatient().toString()+".\n"
+						+"Cordialement,";
+			BodyPart mimeBodyPart = new MimeBodyPart();
+			mimeBodyPart.setText(msg);
+			MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+			attachmentBodyPart.attachFile(file);
+			Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(mimeBodyPart);
+			multipart.addBodyPart(attachmentBodyPart);
+			message.setContent(multipart);
+			Transport.send(message);
+			
+	        RapportDoc doc = new RapportDoc(rapport.getIdRapport(), rapport.getIdPatient(), rapport.getNamePatient(), fileN,
+	        		".pdf", path, rapport.getDateAnalyse());
+	        rapDocRepo.save(doc);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 	    } catch (FileNotFoundException e) {
@@ -184,18 +228,12 @@ public class RapportDocController {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		finally {
-			String fileN = StringUtils.cleanPath(fileName+".pdf");
-			File file = new File(fileN);
-			String path = file.getAbsolutePath();
-//			byte[] bytesArray = new byte[(int) file.length()];
-//			FileInputStream fis = new FileInputStream(file);
-//			fis.read(bytesArray); //read file into bytes[]
-	        RapportDoc doc = new RapportDoc(rapport.getIdRapport(), rapport.getIdPatient(), rapport.getNamePatient(), fileN,
-	        		".pdf", path, rapport.getDateAnalyse());
-	        rapDocRepo.save(doc);
-//			fis.close();
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return new ResponseEntity<>(new ResponseMessage("PDF has been created"), HttpStatus.OK);
 	}
