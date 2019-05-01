@@ -13,7 +13,6 @@ public class UserRoles {
 	@Id
     private Long user_id;
 
-    @NaturalId
     private Long role_id;
 
     public UserRoles() {}

@@ -10,6 +10,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cascade;
+import org.json.JSONArray;
 
 
 @Entity
@@ -21,7 +23,7 @@ import javax.validation.constraints.Size;
             "email"
         })
 })
-public class User{
+public class User extends JSONArray{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,7 +48,7 @@ public class User{
     private String address;
     
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinTable(name = "user_roles",
     	joinColumns = @JoinColumn(name = "user_id"), 
     	inverseJoinColumns = @JoinColumn(name = "role_id"))

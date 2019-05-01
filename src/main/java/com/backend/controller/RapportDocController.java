@@ -167,9 +167,9 @@ public class RapportDocController {
 	        tableAnalyse.addCell("Valeur Normal");
 	        tableAnalyse.setHeaderRows(1);
 	        rapport.getAnalyseTab().forEach(item -> {
-	        	PdfPCell cel1 = new PdfPCell(new Paragraph(item.get("analyseDemande").toString()));
-	        	PdfPCell cel2 = new PdfPCell(new Paragraph(item.get("resultat").toString()));
-	        	PdfPCell cel3 = new PdfPCell(new Paragraph(item.get("valNormal").toString()));
+	        	PdfPCell cel1 = new PdfPCell(new Paragraph(item.getAnalyseDemande()));
+	        	PdfPCell cel2 = new PdfPCell(new Paragraph(item.getResultat()));
+	        	PdfPCell cel3 = new PdfPCell(new Paragraph(item.getValNormal()));
 	        	tableAnalyse.addCell(cel1);
 	        	tableAnalyse.addCell(cel2);
 	        	tableAnalyse.addCell(cel3);
@@ -218,23 +218,9 @@ public class RapportDocController {
 	        RapportDoc doc = new RapportDoc(rapport.getIdRapport(), rapport.getIdPatient(), rapport.getNamePatient(), fileN,
 	        		".pdf", path, rapport.getDateAnalyse());
 	        rapDocRepo.save(doc);
-		} catch (DocumentException e) {
+		} catch (DocumentException | MessagingException | IOException e) {
 			e.printStackTrace();
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    } catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    }
 		return new ResponseEntity<>(new ResponseMessage("PDF has been created"), HttpStatus.OK);
 	}
 	

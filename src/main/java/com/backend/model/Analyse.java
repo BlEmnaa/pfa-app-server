@@ -15,26 +15,23 @@ import org.json.simple.JSONObject;
 
 @Entity
 @Table(name="analyses")
-public class Analyse extends HashMap<String, String>{
+public class Analyse {
 	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String analyseDemande;
 
     private String resultat;
     
-    @NotBlank
     private String valNormal;
 
 
     public Analyse() {}
 	
-	public Analyse( @NotBlank String analyseDemande, String resultat, @NotBlank String valNormal) {
-		super();
+	public Analyse(String analyseDemande, String resultat, String valNormal) {
 		this.analyseDemande = analyseDemande;
 		this.resultat = resultat;
 		this.valNormal = valNormal;

@@ -110,7 +110,7 @@ public class PersonnelController {
   }
 
  
-  @PutMapping("/personnels/{id}")
+  @PostMapping("/personnels/{id}")
   public ResponseEntity<?> updatePersonnel(@PathVariable("id") long id, @RequestBody User personnel) {
     System.out.println("Update Personnel with ID = " + id + "...");
     try {
@@ -119,14 +119,11 @@ public class PersonnelController {
     	    if (personnelData.isPresent()) {
     	    	User _personnel = personnelData.get();
     	    	User per = new User();
-    	    	per.setId(id);
     	    	per.setFullName( (personnel.getFullName() != null ? personnel.getFullName() : _personnel.getFullName()) );
-    	    	per.setUsername( (personnel.getUsername() != null ? personnel.getUsername() : _personnel.getUsername()) );
-    	    	per.setPassword( (personnel.getPassword() != null ? personnel.getPassword() : _personnel.getPassword()) );
-    	    	per.setEmail( (personnel.getEmail() != null ? personnel.getEmail() : _personnel.getEmail()) );
     	    	per.setBirthDate( (personnel.getBirthDate() != null ? personnel.getBirthDate() : _personnel.getBirthDate()));
     	    	per.setAddress( (personnel.getAddress() != null ? personnel.getAddress() : _personnel.getAddress()));
-    	      repository.save(per);
+    			
+        		repository.save(per);
     	    }
         return new ResponseEntity<>(new ResponseMessage("Personnel has been Modified!"), HttpStatus.OK);
     } catch (Exception e) {

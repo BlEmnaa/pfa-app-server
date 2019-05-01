@@ -48,24 +48,25 @@ public class AnalyseController {
   @PostMapping(value = "/analyses/create")
   @Secured({"ROLE_ADMIN"})
   public ResponseEntity<?> postAnalyse(@RequestBody Analyse analyse) {
- 
-	  repository.save(new Analyse(analyse.getAnalyseDemande(),analyse.getResultat(),analyse.getValNormal()));
+	  
+	  Analyse a = new Analyse(analyse.getAnalyseDemande(), analyse.getResultat(), analyse.getValNormal());
+	  repository.save(a);
 	  
 	  return new ResponseEntity<>(new ResponseMessage("Analyse has been Added!"), HttpStatus.OK);
   }
  
   @DeleteMapping("/analyses/{id}")
   @Secured({"ROLE_ADMIN"})
-  public ResponseEntity<String> deleteAnalyse(@PathVariable("id") long id) {
+  public ResponseEntity<?> deleteAnalyse(@PathVariable("id") long id) {
     System.out.println("Delete Analyse with ID = " + id + "...");
  
     repository.deleteById(id);
  
-    return new ResponseEntity<>("Analyse has been deleted!", HttpStatus.OK);
+    return new ResponseEntity<>(new ResponseMessage("Analyse has been deleted!"), HttpStatus.OK);
   }
  
  
-  @PutMapping("/analyse/{id}")
+  @PutMapping("/analyses/{id}")
   @Secured({"ROLE_ADMIN"})
   public ResponseEntity<?> updateAnalyse(@PathVariable("id") long id, @RequestBody Analyse analyse) {
     System.out.println("Update Analyse with ID = " + id + "...");

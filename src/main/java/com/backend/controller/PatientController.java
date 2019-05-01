@@ -13,8 +13,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,7 @@ import com.backend.repository.UserRepository;
 import com.backend.repository.UserRolesRepository;
 import com.backend.security.jwt.JwtProvider;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class PatientController {
@@ -58,6 +61,7 @@ public class PatientController {
 	PasswordEncoder encoder;
  
   @GetMapping("/patients")
+  @Secured({"ROLE_PL","ROLE_ADMIN"})
   public List<User> getAllPatients() {
     System.out.println("Get all Patients...");
  
@@ -68,6 +72,7 @@ public class PatientController {
   }
  
   @PostMapping(value = "/patients/create")
+  @Secured({"ROLE_PL","ROLE_ADMIN"})
   public ResponseEntity<?> postPatient(@Valid @RequestBody SignUpForm signUpRequest) {
 	  if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
@@ -97,6 +102,7 @@ public class PatientController {
   }
  
   @DeleteMapping("/patients/{id}")
+  @Secured({"ROLE_PL","ROLE_ADMIN"})
   public ResponseEntity<?> deletePatient(@PathVariable("id") long id) {
     System.out.println("Delete Patient with ID = " + id + "...");
  
@@ -108,6 +114,7 @@ public class PatientController {
 
  
   @PutMapping("/patients/{id}")
+  @Secured({"ROLE_PL","ROLE_ADMIN"})
   public ResponseEntity<?> updatePatient(@PathVariable("id") long id, @RequestBody User patient) {
     System.out.println("Update Patient with ID = " + id + "...");
     try {
