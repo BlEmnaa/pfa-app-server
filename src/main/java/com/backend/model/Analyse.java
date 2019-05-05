@@ -22,10 +22,12 @@ public class Analyse {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	@NotBlank
     private String analyseDemande;
 
-    private String resultat;
+	private String resultat;
     
+	@NotBlank
     private String valNormal;
 
 

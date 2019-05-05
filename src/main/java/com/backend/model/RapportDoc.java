@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class RapportDoc {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idRapport;
 	
 	
@@ -50,10 +51,9 @@ public class RapportDoc {
 		this.fullnamePatient = fullnamePatient;
 	}
 
-	public RapportDoc(Long idRapport, Long idPatient, String fullnamePatient, String nameFile,
+	public RapportDoc(Long idPatient, String fullnamePatient, String nameFile,
 			String typeFile, String filePath, String dateCreation) {
 		super();
-		this.idRapport = idRapport;
 		this.idPatient = idPatient;
 		this.fullnamePatient = fullnamePatient;
 		this.nameFile = nameFile;

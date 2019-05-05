@@ -215,7 +215,7 @@ public class RapportDocController {
 			message.setContent(multipart);
 			Transport.send(message);
 			
-	        RapportDoc doc = new RapportDoc(rapport.getIdRapport(), rapport.getIdPatient(), rapport.getNamePatient(), fileN,
+	        RapportDoc doc = new RapportDoc(rapport.getIdPatient(), rapport.getNamePatient(), fileN,
 	        		".pdf", path, rapport.getDateAnalyse());
 	        rapDocRepo.save(doc);
 		} catch (DocumentException | MessagingException | IOException e) {
