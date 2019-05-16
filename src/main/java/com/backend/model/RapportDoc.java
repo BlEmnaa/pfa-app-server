@@ -33,7 +33,7 @@ public class RapportDoc {
 	
 	private String typeFile;
 	
-	private String filePath;
+	private byte[] fileData;
 	
 	private String dateCreation;
 	
@@ -52,13 +52,13 @@ public class RapportDoc {
 	}
 
 	public RapportDoc(Long idPatient, String fullnamePatient, String nameFile,
-			String typeFile, String filePath, String dateCreation) {
+			String typeFile, byte[] fileData, String dateCreation) {
 		super();
 		this.idPatient = idPatient;
 		this.fullnamePatient = fullnamePatient;
 		this.nameFile = nameFile;
 		this.typeFile = typeFile;
-		this.filePath = filePath;
+		this.fileData = fileData;
 		this.dateCreation = dateCreation;
 	}
 
@@ -94,12 +94,12 @@ public class RapportDoc {
 		this.typeFile = typeFile;
 	}
 
-	public String getFilePath() {
-		return filePath;
+	public byte[] getFileData() {
+		return fileData;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public void setFileData(byte[] fileData) {
+		this.fileData = fileData;
 	}
 
 	public String getDateCreation() {

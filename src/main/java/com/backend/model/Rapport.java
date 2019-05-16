@@ -30,9 +30,8 @@ public class Rapport extends JSONArray{
 	@NotBlank
 	@Email
 	private String mailDocteur;
-	
+
 	private List<Analyse> analyseTab = new ArrayList<>();
-	
 
 	public Long getIdRapport() {
 		return idRapport;

@@ -20,7 +20,11 @@ import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.StringUtils;
@@ -180,7 +184,10 @@ public class RapportDocController {
 	        
 	        String fileN = StringUtils.cleanPath(fileName+".pdf");
 			File file = new File(fileN);
-			String path = file.getAbsolutePath();
+			byte[] bytesArray = new byte[(int) file.length()];
+			FileInputStream fis = new FileInputStream(file);
+			fis.read(bytesArray); //read file into bytes[]
+			fis.close();
 			
 			Properties prop = new Properties();
 			prop.put("mail.smtp.auth", true);
@@ -216,7 +223,7 @@ public class RapportDocController {
 			Transport.send(message);
 			
 	        RapportDoc doc = new RapportDoc(rapport.getIdPatient(), rapport.getNamePatient(), fileN,
-	        		".pdf", path, rapport.getDateAnalyse());
+	        		".pdf", bytesArray, rapport.getDateAnalyse());
 	        rapDocRepo.save(doc);
 		} catch (DocumentException | MessagingException | IOException e) {
 			e.printStackTrace();
@@ -224,23 +231,14 @@ public class RapportDocController {
 		return new ResponseEntity<>(new ResponseMessage("PDF has been created"), HttpStatus.OK);
 	}
 	
-//	@PostMapping("/download")
-//	public ResponseEntity<?> download(@RequestBody long idRapport) {
-//	    List<RapportDoc> rapportDocs = new ArrayList<>();
-//	    RapportDoc docInfo = rapDocRepo.findByIdRapport(idRapport);
-//	    System.out.println(docInfo);
-//	    try {
-//			FileOutputStream fos = new FileOutputStream("d:\\" + docInfo.getNameFile());
-//			fos.write(docInfo.getData());
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	    
-//	    return new ResponseEntity<>(new ResponseMessage("PDF has been download"), HttpStatus.OK);
-//	}
+	@GetMapping("/download/{id}")
+	public ResponseEntity<?> download(@PathVariable("id") long idRapport) {
+	    List<RapportDoc> rapportDocs = new ArrayList<>();
+	    RapportDoc docInfo = rapDocRepo.findByIdRapport(idRapport);
+	    return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + docInfo.getNameFile() + "\"")
+                .body(new ByteArrayResource(docInfo.getFileData()));
+	}
 
 }
