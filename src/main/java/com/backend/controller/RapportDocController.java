@@ -53,7 +53,6 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.TabStop.Alignment;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPTableHeader;
@@ -109,13 +108,14 @@ public class RapportDocController {
 	public ResponseEntity<?> deleteRapport(@PathVariable("id") long idRapport) {
 	    System.out.println("Delete Rapport with ID = " + idRapport + "...");
 	    rapDocRepo.deleteById(idRapport);
-	    return new ResponseEntity<>(new ResponseMessage("Rapport has been deleted!"), HttpStatus.OK);
+	    return new ResponseEntity<>(new ResponseMessage("The Document has been deleted!"), HttpStatus.OK);
 	}
 	
 	@PostMapping("/generateDoc")
 	@Secured({"ROLE_PL","ROLE_ADMIN"})
 	public ResponseEntity<?> generateDoc(@RequestBody Rapport rapport) throws IOException {
 		Document document = new Document();
+		System.out.println(rapport);
 		String fileName = "Rapport_" + rapport.getNamePatient().toString() + "_" + rapport.getIdRapport().toString();
 		try {
 			
@@ -222,7 +222,7 @@ public class RapportDocController {
 			message.setContent(multipart);
 			Transport.send(message);
 			
-	        RapportDoc doc = new RapportDoc(rapport.getIdPatient(), rapport.getNamePatient(), fileN,
+	        RapportDoc doc = new RapportDoc(rapport.getIdRapport(), rapport.getIdPatient(), rapport.getNamePatient(), fileN,
 	        		".pdf", bytesArray, rapport.getDateAnalyse());
 	        rapDocRepo.save(doc);
 		} catch (DocumentException | MessagingException | IOException e) {

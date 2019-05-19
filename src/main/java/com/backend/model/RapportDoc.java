@@ -15,9 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class RapportDoc {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idRapport;
-	
 	
 	@JoinTable(name = "users", 
 			joinColumns = @JoinColumn(name = "id"),
@@ -51,9 +49,10 @@ public class RapportDoc {
 		this.fullnamePatient = fullnamePatient;
 	}
 
-	public RapportDoc(Long idPatient, String fullnamePatient, String nameFile,
+	public RapportDoc(Long idRapport, Long idPatient, String fullnamePatient, String nameFile,
 			String typeFile, byte[] fileData, String dateCreation) {
 		super();
+		this.idRapport = idRapport;
 		this.idPatient = idPatient;
 		this.fullnamePatient = fullnamePatient;
 		this.nameFile = nameFile;
