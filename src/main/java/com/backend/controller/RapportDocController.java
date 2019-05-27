@@ -85,9 +85,9 @@ public class RapportDocController {
 	    return rapportDocs;
 	}
 	
-	@PostMapping("/getById")
+	@GetMapping("/getById/{id}")
 	@Secured({"ROLE_PATIENT"})
-	public List<RapportDoc> getById(@Valid @RequestBody long idPatient) {
+	public List<RapportDoc> getById(@PathVariable("id") long idPatient) {
 		System.out.println("Get all RapportDocs...");
 	    List<RapportDoc> rapportDocs = new ArrayList<>();
 	    rapDocRepo.findByIdPatient(idPatient).forEach(rapportDocs::add);
