@@ -2,6 +2,7 @@ package com.backend.repository;
 
 import java.util.List;
 
+
 import org.springframework.data.repository.CrudRepository;
 
 import com.backend.model.Analyse;
